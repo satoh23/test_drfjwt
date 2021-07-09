@@ -1,0 +1,29 @@
+version: '3'
+services: 
+    web:
+        container_name: test_drfjwt_web
+        build: .
+        volumes: 
+            - .:/test_drfjwt/
+        ports: 
+            - "9090:8000"
+        command: ["./wait-for-db.sh", "db:40007", "python manage.py runserver 0.0.0.0:8000"]
+        depends_on: 
+            - db
+    db:
+        container_name: test_drfjwt_db
+        image: mysql:8.0
+        ports: 
+            - '40007:3306'
+        volumes: 
+            - mysqldata:/var/lib/mysql
+            - ./db_cnf:/etc/mysql/conf.d
+        restart: always
+        environment: 
+            MYSQL_DATABASE: 'test_drfjwt_db'
+            MYSQL_ROOT_PASSWORD: 'Tetsuya2525hideout'
+            MYSQL_PASSWORD: 'Tetsuya2525hideout'
+            MYSQL_USER: 'tetsuya'
+            TZ: 'Asia/Tokyo'
+volumes:
+    mysqldata:
